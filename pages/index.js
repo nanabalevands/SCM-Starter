@@ -5,11 +5,10 @@ import atm_abi from "../artifacts/contracts/Assessment.sol/Assessment.json";
 export default function HomePage() {
   const [ethWallet, setEthWallet] = useState(undefined);
   const [account, setAccount] = useState(undefined);
-  const [atm, setATM] = useState(undefined);
-  const [balance, setBalance] = useState(undefined);
-
+  const [contract, setContract] = useState(undefined);
+  const [totalSupply, setTotalSupply] = useState(undefined);
+const[tonkenName,setTokenName]= useState(undefined)
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const atmABI = atm_abi.abi;
 
   const getWallet = async() => {
     if (window.ethereum) {
@@ -42,36 +41,42 @@ export default function HomePage() {
     handleAccount(accounts);
     
     // once wallet is set we can get a reference to our deployed contract
-    getATMContract();
+    getContract();
   };
 
-  const getATMContract = () => {
+  const getContract = () => {
     const provider = new ethers.providers.Web3Provider(ethWallet);
     const signer = provider.getSigner();
-    const atmContract = new ethers.Contract(contractAddress, atmABI, signer);
+    const Contract = new ethers.Contract(contractAddress, abi, signer);
  
-    setATM(atmContract);
+    setContract(Contract);
   }
 
-  const getBalance = async() => {
-    if (atm) {
-      setBalance((await atm.getBalance()).toNumber());
+  const getTotalSupply= async() => {
+    if (Contract) {
+      setTotalSupply((await contract.tokenName());
     }
   }
 
-  const deposit = async() => {
-    if (atm) {
-      let tx = await atm.deposit(1);
+
+  const getTokenName= async() => {
+    if (Contract) {
+      setTokenName((await contract.getTotalSupply()).toNumber());
+    }
+  }
+  const mint = async() => {
+    if (contract) {
+      let tx = await contract.mint(1);
       await tx.wait()
-      getBalance();
+      getTotalSupply();
     }
   }
 
-  const withdraw = async() => {
-    if (atm) {
-      let tx = await atm.withdraw(1);
+  const burn = async() => {
+    if (contract) {
+      let tx = await contract.burn(1);
       await tx.wait()
-      getBalance();
+      getTotalSupply();
     }
   }
 
@@ -86,16 +91,18 @@ export default function HomePage() {
       return <button onClick={connectAccount}>Please connect your Metamask wallet</button>
     }
 
-    if (balance == undefined) {
-      getBalance();
+    if (tokenName == undefined || totalSupply== undefined) {
+      getTokenName();
+      getTotalSupply ();
     }
 
     return (
       <div>
         <p>Your Account: {account}</p>
-        <p>Your Balance: {balance}</p>
-        <button onClick={deposit}>Deposit 1 ETH</button>
-        <button onClick={withdraw}>Withdraw 1 ETH</button>
+        <p>The token name is :{tokenName}}</p>
+        <p>The token supply is : {totalSupply}</p>
+        <button onClick={mint}>mint 1 {tokenName}</button>
+        <button onClick={burn}>burn 1 {tokenName}</button>
       </div>
     )
   }
@@ -104,7 +111,7 @@ export default function HomePage() {
 
   return (
     <main className="container">
-      <header><h1>Welcome to the Metacrafters ATM!</h1></header>
+      <header><h1>Welcome to the token service!</h1></header>
       {initUser()}
       <style jsx>{`
         .container {
