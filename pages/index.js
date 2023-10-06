@@ -1,14 +1,14 @@
 import {useState, useEffect} from "react";
 import {ethers} from "ethers";
-import atm_abi from "../artifacts/contracts/Assessment.sol/Assessment.json";
+import abi from "../contracts/abi.json";
 
 export default function HomePage() {
   const [ethWallet, setEthWallet] = useState(undefined);
   const [account, setAccount] = useState(undefined);
   const [contract, setContract] = useState(undefined);
   const [totalSupply, setTotalSupply] = useState(undefined);
-const[tonkenName,setTokenName]= useState(undefined)
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const[tokenName,setTokenName]= useState(undefined)
+  const contractAddress = "0x85aC86055CCcB6c868C8c5d1d1e0B8f9FB828E0A";
 
   const getWallet = async() => {
     if (window.ethereum) {
@@ -53,15 +53,15 @@ const[tonkenName,setTokenName]= useState(undefined)
   }
 
   const getTotalSupply= async() => {
-    if (Contract) {
-      setTotalSupply((await contract.tokenName());
+    if (contract) {
+      setTotalSupply(((await contract.totalSupply()).toNumber()));
     }
   }
 
 
   const getTokenName= async() => {
-    if (Contract) {
-      setTokenName((await contract.getTotalSupply()).toNumber());
+    if (contract) {
+      setTokenName((await contract.tokenName()));
     }
   }
   const mint = async() => {
@@ -99,7 +99,7 @@ const[tonkenName,setTokenName]= useState(undefined)
     return (
       <div>
         <p>Your Account: {account}</p>
-        <p>The token name is :{tokenName}}</p>
+        <p>The token name is :{tokenName}</p>
         <p>The token supply is : {totalSupply}</p>
         <button onClick={mint}>mint 1 {tokenName}</button>
         <button onClick={burn}>burn 1 {tokenName}</button>
